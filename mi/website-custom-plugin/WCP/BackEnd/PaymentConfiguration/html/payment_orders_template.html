@@ -1,0 +1,188 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.12/datatables.min.js"></script>
+<div class="flex_container" style="padding-top:20px;">
+	<div>
+		<h3>Payment Listing</h3>
+		<div>
+			Below is a Payment Basic Details
+		</div>
+		<hr style="background-color:#000000; height:2px;">
+		<div style="padding-bottom:10px;">
+		
+			<div style="clear:both;"></div>
+		</div>
+	<div class="table-responsive">
+    <table id='payment_table' class="table table-bordered">
+		<thead>
+		<tr>
+			<th class="all">First Name</th>
+			<th class="all">Last Name</th>
+			<th class="all">User Email</th>
+			<th class="all">Stripe Charge ID</th>
+			<th class="all">Amount($)</th>
+			<th class="all">Description</th>
+			<th class="all">Created At</th>
+		</tr>
+		</thead>
+		<!--tbody>
+			<?php global $wpdb; 
+			$tablename=$wpdb->prefix.'payment_orders';
+			$sql = "SELECT * from $tablename"; 
+			$results = $wpdb->get_results($sql, "ARRAY_A");
+			$cnt=1;
+			//echo "<pre>"; print_r($results); die;
+				foreach($results as $res){
+			?>
+			<tr>
+				<td><?php echo $cnt; ?></td>
+				<td><?php $user_info = get_userdata($res['user_id']); echo $user_info->first_name; ?></td>
+				<td><?php echo $user_info->last_name;?></td>
+				<td><?php echo $user_info->user_email; ?></td>
+				<td><?php echo $res['charge_id']; ?></td>
+				<td><?php echo $res['price']; ?></td>
+				<td><?php echo $res['description']; ?></td>
+				<td><?php echo $res['created_at']; ?></td>
+			</tr>
+			
+		<?php	$cnt++; }  ?>
+			</tbody-->
+		<tbody>
+        </tbody>
+    </table>
+	</div>
+
+	</div>
+</div>
+
+<script>
+jQuery(document).ready(function() {
+		$ = jQuery;
+		var is_completed_request = false;
+		var is_processing_request = false;
+
+		var number_updates = 0;
+		var unique_query_id = "";
+
+		var number_inserts = 0;
+
+		var page_number = 1;
+
+		/*
+		console.info(ajaxurl);
+		$.ajax({
+			url: ajaxurl,
+			type: 'post',
+			dataType: 'json',
+			data:  { ajax_call: "city_state_search", action: "home_junction_import_city_state_search", page_number: page_number }
+		}).done(function(result){
+			console.info(result);
+		});
+
+		*/
+		var get_break_down_by = function () {
+			return $('.break_down_by_input').val();
+		}
+
+		var get_date_period = function () {
+			return $('.date_period_input').val();
+		}
+
+
+
+		var $table = jQuery("#payment_table").DataTable({
+			"processing": true,
+			"serverSide": true,
+			"dom": 'trip<"clear">',
+			//"dom": 'trilp<"clear">',
+			"aaSorting": [[ 1, "desc" ]],
+			"ajax": {
+				type: "post",
+				url : ajaxurl,
+				data: function ( d ) {
+					return jQuery.extend( {}, d, {
+						"action": "WCP_BackEnd_Profiles_Controller::get_payment_data",
+						"break_down_by": get_break_down_by(),
+						"date_period": get_date_period()
+						//"dtEnd": $("#dtEndAlternate").val(),
+						//"provincia": $("#selProvincia").val(),
+						//"inviati": $("input[name=preventiviinviati]:checked").val()
+					});
+				}
+			},
+			"fnDrawCallback": function (oSettings) {
+			},
+			"columnDefs": [			
+			{
+				"data":"first_name",
+				"render": function ( data, type, row ) {
+					return data;
+				},
+				"targets": 0
+			},
+			{
+				"data": "last_name",
+				"render": function ( data, type, row ) {
+					return data;
+				},
+				"targets": 1
+			},
+			{
+				"data": "email",
+				"render": function ( data, type, row ) {
+					return data;
+				},
+				"targets": 2
+			},
+			{
+				"data": "charge_id",
+				"render": function ( data, type, row ) {
+					return data;
+				},
+				"targets": 3
+			},
+			{
+				"data": "price",
+				"render": function ( data, type, row ) {
+					return data;
+				},
+				"targets": 4
+			},
+			{
+				"data": "description",
+				"render": function ( data, type, row ) {
+					return data;
+				},
+				"targets": 5
+			},
+			{
+				"data": "created_at",
+				"render": function ( data, type, row ) {
+					return data;
+				},
+				"targets": 6
+			},									
+			],
+		});
+
+
+		$('.break_down_by_input').change(function() {
+			$table.ajax.reload();
+		});
+
+		$('.date_period_input').change(function() {
+			$table.ajax.reload();
+		});	
+		
+	}); <!-- end document ready -->
+</script>

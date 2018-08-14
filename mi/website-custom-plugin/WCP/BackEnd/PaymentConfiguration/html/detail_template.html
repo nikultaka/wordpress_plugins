@@ -1,0 +1,225 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.12/datatables.min.js"></script>
+
+
+<style>
+	.flex_container {
+		  display:                 flex;
+		  display:                 -webkit-flex; /* Safari 8 */
+		  flex-wrap:               wrap;
+		  -webkit-flex-wrap:       wrap;         /* Safari 8 */
+		  justify-content:         center;
+		  -webkit-justify-content: center;       /* Safari 8 */
+	}
+
+</style>
+
+
+
+
+<div class="flex_container" style="padding-top:20px;">
+	<div style="">
+		<h3>Users</h3>
+		<div>
+			Below is a User Basic Detail
+		</div>
+		<hr style="background-color:#000000; height:2px;">
+		<div style="padding-bottom:10px;">
+			
+			<div style="clear:both;"></div>
+		</div>
+		<div style="overflow-x:auto;">
+			<table class="table table-striped table-hover table-bordered dt-responsive" width="100%"  id="sales_table">
+			<thead>
+				<tr>
+				<th class="all">ID</th>
+				<th class="all">User ID</th>
+				<th class="all">Shirt & Blouse</th>
+				<th class="all">Pants</th>
+				<th class="all">Jeans waist</th>
+				<th class="all">Skirt</th>
+				<th class="all">Dress</th>
+				<th class="all">Bra</th>
+				<th class="all">Shoes</th>
+				<th class="all">Overall</th>
+				<th class="all">Kids Sizes</th>
+				<th class="all">Special Notes/Requests</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+<script>
+
+	
+
+
+	jQuery(document).ready(function() {
+		$ = jQuery;
+		var is_completed_request = false;
+		var is_processing_request = false;
+
+		var number_updates = 0;
+		var unique_query_id = "";
+
+		var number_inserts = 0;
+
+		var page_number = 1;
+
+		/*
+		console.info(ajaxurl);
+		$.ajax({
+			url: ajaxurl,
+			type: 'post',
+			dataType: 'json',
+			data:  { ajax_call: "city_state_search", action: "home_junction_import_city_state_search", page_number: page_number }
+		}).done(function(result){
+			console.info(result);
+		});
+
+		*/
+		var get_break_down_by = function () {
+			return $('.break_down_by_input').val();
+		}
+
+		var get_date_period = function () {
+			return $('.date_period_input').val();
+		}
+
+
+
+		var $table = jQuery("#sales_table").DataTable({
+			"processing": true,
+			"serverSide": true,
+			"dom": 'trip<"clear">',
+			//"dom": 'trilp<"clear">',
+			"aaSorting": [[ 1, "desc" ]],
+			"ajax": {
+				type: "post",
+				url : ajaxurl,
+				data: function ( d ) {
+					return jQuery.extend( {}, d, {
+						"action": "WCP_BackEnd_Profiles_Controller::get_data",
+						"break_down_by": get_break_down_by(),
+						"date_period": get_date_period()
+						//"dtEnd": $("#dtEndAlternate").val(),
+						//"provincia": $("#selProvincia").val(),
+						//"inviati": $("input[name=preventiviinviati]:checked").val()
+					});
+				}
+			},
+			"fnDrawCallback": function (oSettings) {
+			},
+			"columnDefs": [
+			{
+				"data":"id",
+				"visible": true,
+				"targets": 0
+			},
+			{
+				"data":"user_id",
+				"render": function ( data, type, row ) {
+					return data;
+				},
+				"targets": 1
+			},
+			{
+				"data": "shirt",
+				"render": function ( data, type, row ) {
+					return data+', '+row['blouse'];
+				},
+				"targets": 2
+			},
+			{
+				"data": "pants1",
+				"render": function ( data, type, row ) {
+					return data+', '+row['pants2']
+				},
+				"targets": 3
+			},
+			{
+				"data": "jeans",
+				"render": function ( data, type, row ) {
+					return data;
+				},
+				"targets": 4
+			},
+			{
+				"data": "skirt1",
+				"render": function ( data, type, row ) {
+					return data+ ' , '+row['skirt2'];
+				},
+				"targets": 5
+			},
+			{
+				"data": "dress1",
+				"render": function ( data, type, row ) {
+					return data+ ' , '+row['dress2'];
+				},
+				"targets": 6
+			},
+			{
+				"data": "bra1",
+				"render": function ( data, type, row ) {
+					return data+ ' , '+row['bra2'];
+				},
+				"targets": 7
+			},
+			{
+				"data": "shoes1",
+				"render": function ( data, type, row ) {
+					return data+ ' , '+row['shoes2'];
+				},
+				"targets": 8
+			},
+			{
+				"data": "overall",
+				"render": function ( data, type, row ) {
+					return data;
+				},
+				"targets": 9
+			},
+{
+				"data": "kids_sizes",
+				"render": function ( data, type, row ) {
+					return data+ ' , '+row['kids_sizes'];
+				},
+				"targets": 10
+			},
+			{
+				"data": "special_notes_requests",
+				"render": function ( data, type, row ) {
+					return data+ ' , '+row['special_notes_requests'];
+				},
+				"targets": 11
+			},			
+			],
+		});
+
+
+		$('.break_down_by_input').change(function() {
+			$table.ajax.reload();
+		});
+
+		$('.date_period_input').change(function() {
+			$table.ajax.reload();
+		});	
+		
+	}); <!-- end document ready -->
+</script>
