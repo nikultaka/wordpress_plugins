@@ -1,6 +1,6 @@
 <?php
 
-
+echo "123"
 echo "test";
 /**
 * Plugin Name: Website Custom Plugin
