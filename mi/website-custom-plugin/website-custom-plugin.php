@@ -1,12 +1,4 @@
 <?php
-
-
-
-
-
-
-echo "sdsds23234";
-echo "344f4";
 /**
 * Plugin Name: Website Custom Plugin
 * Plugin URI: 
