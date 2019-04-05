@@ -1,6 +1,7 @@
 <?php
-//echo "123343456";     
-//echo "1232323";
+
+
+echo "test";
 /**
 * Plugin Name: Website Custom Plugin
 * Plugin URI: 
