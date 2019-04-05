@@ -10,7 +10,7 @@
 */
 
 
-echo "test123";
+echo "test123456";
 
 define( 'WCP_PLUGIN_VERSION', '1.0.0' );
 define( 'WCP_PLUGIN_DOMAIN', 'website-custom-plugin' );
